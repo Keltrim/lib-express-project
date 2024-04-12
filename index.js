@@ -71,8 +71,7 @@ app.put('/api/books/:id', (req, res) => {
 
         res.json(books[idx])
     } else {
-        res.status(404)
-        res.json('404 | ресурс не найден')
+        res.status(404).json('404 | ресурс не найден')
     }
 });
 
@@ -85,8 +84,7 @@ app.delete('/api/books/:id', (req, res) => {
         books.splice(idx, 1)
         res.json("ok")
     } else {
-        res.status(404)
-        res.json('404 | ресурс не найден')
+        res.status(404).json('404 | ресурс не найден')
     }
 });
 
