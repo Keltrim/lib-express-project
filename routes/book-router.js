@@ -31,7 +31,7 @@ router.post('/api/books', uploadBook.single('book-img'), (req, res) => {
         const { path } = req.file
         fileBook = path;
     }
-
+ 
     const {title, description, authors, favorite, fileCover, fileName} = req.body;
 
     const newBook = new Book(title, description, authors, favorite, fileCover, fileName, fileBook);
@@ -80,14 +80,13 @@ router.get('/api/books/:id/download', (req, res) => {
     const {books} = store;
     const {id} = req.params;
     const book = books.find(el => el.id === id)
-    if(book !== undefined){
-        res.download(book.fileBook, book.id, err => {
-            if (err)
-            res.status(404).json('404 | ресурс не найден');
-        });
-    } else {
+    if(book === undefined){
         res.status(404).json('404 | ресурс не найден')
-    }
+    } 
+    res.download(book.fileBook, book.id, err => {
+        if (err)
+            res.status(404).json('404 | ресурс не найден');
+    });
     
 });
 
