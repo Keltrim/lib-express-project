@@ -1,0 +1,66 @@
+<form method="POST" class="mt-5" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="inputTitle">Title</label>
+        <input type="text"
+               value="<%= book.title %>"
+               name="title"
+               class="form-control"
+               id="inputTitle">
+    </div>
+
+    <div class="form-group">
+        <label for="inputDesc">Description</label>
+        <textarea
+                rows="3"
+                name="description"
+                class="form-control"
+                id="inputDesc"
+        ><%= book.description %></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="inputAuthors">Authors</label>
+        <input type="text"
+               value="<%= book.authors %>"
+               name="authors"
+               class="form-control"
+               id="inputAuthors">
+    </div>
+    <div class="form-group">
+        <label for="inputFileCover">FileCover</label>
+        <input type="text"
+               value="<%= book.fileCover %>"
+               name="fileCover"
+               class="form-control"
+               id="inputFileCover">
+    </div>
+    <div class="form-group">
+        <label for="inputFileName">FileName</label>
+        <input type="text"
+               value="<%= book.fileName %>"
+               name="fileName"
+               class="form-control"
+               id="inputFileName">
+    </div>
+    <div class="form-group">
+        <label for="inputFile">FileBook</label>
+        <input type="file"
+               value="<%= book.fileBook %>"
+               name="book-img"
+               class="form-control"
+               id="inputFile">
+    </div>
+    <div class="form-group">
+        <label for="inputFavorite">Избранное
+            <input type="checkbox"
+                name="favorite"
+                class="form-control"
+                id="inputFavorite"
+                <%= book.favorite ? 'checked' : '' %>
+                >
+        </label>
+    </div>
+    <div class="form-group text-right ">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </div>
+</form>

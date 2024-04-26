@@ -6,25 +6,22 @@ import { uploadBook } from '../middleware/book-file.js';
 
 const router = Router();
 
-router.get('/api/books', (_, res) => {
+router.get('/', (_, res) => {
     const {books} = store;
-    res.json(books)
+    res.render("books/index", {
+        title: "Books",
+        books: books,
+    });
 });
 
-router.get('/api/books/:id', (req, res) => {
-    const {books} = store;
-    const {id} = req.params
-    const idx = books.findIndex(el => el.id === id)
-
-    if( idx !== -1) {
-        res.json(books[idx])
-    } else {
-        res.status(404).json('404 | ресурс не найден')
-    }
-
+router.get('/create', (req, res) => {
+    res.render("books/create", {
+        title: "Добавление книги",
+        book: {},
+    });
 });
 
-router.post('/api/books', uploadBook.single('book-img'), (req, res) => {
+router.post('/create', uploadBook.single('book-img'), (req, res) => {
     const {books} = store;
     let fileBook = null;
     if(req.file){
@@ -35,57 +32,95 @@ router.post('/api/books', uploadBook.single('book-img'), (req, res) => {
     const {title, description, authors, favorite, fileCover, fileName} = req.body;
 
     const newBook = new Book(title, description, authors, favorite, fileCover, fileName, fileBook);
-    books.push(newBook)
+    books.push(newBook);
 
-    res.status(201).json(newBook)
+    res.redirect('/books')
 });
 
-router.put('/api/books/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     const {books} = store;
-    const {title, description, authors, favorite, fileCover, fileName} = req.body;
     const {id} = req.params
     const idx = books.findIndex(el => el.id === id)
 
-    if (idx !== -1){
-        books[idx] = {
-            ...books[idx],
-            title,
-            description,
-            authors,
-            favorite,
-            fileCover,
-            fileName,
-        }
-
-        res.json(books[idx])
-    } else {
-        res.status(404).json('404 | ресурс не найден')
+    if ( idx === -1) {
+        res.redirect('/404');
     }
+
+    res.render("books/view", {
+        title: "Book | view",
+        book: books[idx],
+    });
+
 });
 
-router.delete('/api/books/:id', (req, res) => {
+router.get('/:id/update', (req, res) => {
+    const {books} = store;
+    const {id} = req.params
+    const idx = books.findIndex(el => el.id === id)
+
+    if (idx === -1) {
+        res.redirect('/404');
+    } 
+
+    res.render("books/update", {
+        title: "Book | update",
+        book: books[idx],
+    });
+});
+
+router.post('/:id/update',uploadBook.single('book-img'), (req, res) => {
+    const {books} = store;
+    const {id} = req.params
+    const {title, description, authors, favorite, fileCover, fileName} = req.body;
+    const idx = books.findIndex(el => el.id === id)
+    
+    if (idx === -1){
+        res.redirect(`/404`);
+    }
+
+    let fileBook = books[idx].fileBook;
+
+    if(req.file){
+        const { path } = req.file
+        fileBook = path;
+    }
+ 
+    books[idx] = {
+        ...books[idx],
+        title,
+        description,
+        authors,
+        favorite,
+        fileCover,
+        fileName,
+        fileBook
+    }
+    res.redirect(`/books/${id}`);
+});
+
+router.post('/:id/delete', (req, res) => {
     const {books} = store;
     const {id} = req.params;
     const idx = books.findIndex(el => el.id === id)
      
-    if(idx !== -1){
-        books.splice(idx, 1)
-        res.json("ok")
-    } else {
-        res.status(404).json('404 | ресурс не найден')
+    if(idx === -1){
+        res.redirect('/404');
     }
+
+    books.splice(idx, 1)
+    res.redirect('/books');
 });
 
-router.get('/api/books/:id/download', (req, res) => {
+router.get('/:id/download', (req, res) => {
     const {books} = store;
     const {id} = req.params;
     const book = books.find(el => el.id === id)
     if(book === undefined){
-        res.status(404).json('404 | ресурс не найден')
+        res.redirect('/404');
     } 
     res.download(book.fileBook, book.id, err => {
         if (err)
-            res.status(404).json('404 | ресурс не найден');
+        res.redirect('/404');
     });
     
 });
