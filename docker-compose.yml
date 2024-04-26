@@ -1,0 +1,25 @@
+services:
+
+  storage:
+    image: redis:latest
+    volumes:
+      - ./data:/data
+
+  counter:
+    image: keltrim/keltrimcounter:v1.0.0
+    ports:
+      - 80:3002
+    environment:
+      - PORT=3002
+      - STORAGE_URL=storage
+    depends_on:
+      - storage
+
+  books:
+    image: keltrim/keltrimbooks:v1.0.0
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+    depends_on:
+      - counter
