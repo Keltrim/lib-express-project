@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { Book } from '../classes/book.js';
 import { store } from '../store/store.js';
 import { uploadBook } from '../middleware/book-file.js';
-
+import axios from 'axios';
 
 const router = Router();
 
@@ -37,18 +37,19 @@ router.post('/create', uploadBook.single('book-img'), (req, res) => {
     res.redirect('/books')
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     const {books} = store;
-    const {id} = req.params
+    const {id} = req.params;
     const idx = books.findIndex(el => el.id === id)
 
     if ( idx === -1) {
         res.redirect('/404');
     }
-
+    const { data } = await axios.post(`http://counter:3002/counter/${id}/incr`, {});
     res.render("books/view", {
         title: "Book | view",
         book: books[idx],
+        views: data.views
     });
 
 });

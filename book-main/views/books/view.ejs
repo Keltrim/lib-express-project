@@ -14,6 +14,7 @@
                 <p class="card-text">fileCOver: <%= book.fileCover %></p>
                 <p class="card-text">fileName: <%= book.fileName%></p>
                 <p class="card-text">favorite: <%= book.favorite ? 'да' : 'нет' %></p>
+                <p class="card-text">Просмотрена раз: <%= views %> </p>
                 <div class="text-right">
                     <a class="btn btn-sm btn-success" href="/books/<%= book.id %>/download">
                         <i class="fa fa-download" aria-hidden="true"></i>
